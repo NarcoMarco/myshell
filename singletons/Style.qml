@@ -29,7 +29,7 @@ QtObject {
 
 	// Popouts
 	property int popoutDefaultMargin: defaultMargin * 2
-	property int popoutDefaultRadius: windowRadius
+	property int popoutDefaultRadius: popoutWidgetHeight / 2
 	property int defaultTabWidth: popoutWidgetHeight * 2
 
 	// Animations

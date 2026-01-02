@@ -7,7 +7,7 @@ import Quickshell.Services.Pipewire
 Singleton {
 	id: audioRoot
 
-	property PwNode defaultNode: Pipewire.defaultAudioSink
+	readonly property PwNode defaultNode: Pipewire.defaultAudioSink
 
 	readonly property PwNodeAudio defaultAudio: defaultNode ? defaultNode.audio : null
 

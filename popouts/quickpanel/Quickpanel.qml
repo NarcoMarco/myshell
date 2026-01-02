@@ -85,17 +85,15 @@ PopoutBase {
 				onCurrentIndexChanged: tabs.setCurrentIndex(currentIndex)
 				spacing: Style.popoutDefaultMargin
 
-				BluetoothControl {}
+				NotifCenter {}
 
 				WifiControl {}
+
+				BluetoothControl {}
 
 				WifiToggle {
 					widgetWidth: parent.width
 					widgetHeight: parent.height
-				}
-				BluetoothToggle {
-					widgetWidth: contentPlane.widgetWidth
-					widgetHeight: Style.popoutWidgetHeight
 				}
 			}
 		}
