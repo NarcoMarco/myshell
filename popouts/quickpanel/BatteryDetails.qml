@@ -9,6 +9,8 @@ Loader {
 
 	asynchronous: false
 
+	Layout.fillWidth: true
+
 	sourceComponent: Item {
 		id: root
 		
