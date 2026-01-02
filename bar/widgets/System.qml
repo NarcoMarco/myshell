@@ -25,7 +25,9 @@ Rectangle {
 
 		BarBrightness {}
 		Volume {}
-		Battery {}
+		Battery {
+			enabled: Style.enableBattery
+		}
 	}
 
 	MouseArea {

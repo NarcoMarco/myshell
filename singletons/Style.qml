@@ -4,6 +4,9 @@ import QtQuick
 
 QtObject {
 
+	// Computer Specific
+	property bool enableBattery: true
+
 	// Heights
 	// Bar
 	property int barHeight: 40 // Only size that *should* have to be changed
