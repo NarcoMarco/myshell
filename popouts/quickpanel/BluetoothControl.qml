@@ -92,7 +92,7 @@ Rectangle {
 				}
 
 				Repeater {
-					model: root.devices.values.filter(d => d.connected)
+					model: root.devices?.values.filter(d => d.connected)
 
 					BTDevice {
 						required property var modelData
@@ -120,7 +120,7 @@ Rectangle {
 				}
 
 				Repeater {
-					model: root.devices.values.filter(d => d.paired)
+					model: root.devices?.values.filter(d => d.paired)
 
 					BTDevice {
 						required property var modelData
@@ -195,7 +195,7 @@ Rectangle {
 				}
 
 				Repeater {
-					model: root.devices.values.filter(d =>
+					model: root.devices?.values.filter(d =>
 							!d.connected &&
 							!d.paired &&
 							d.name.replace(/-/g, ":") != d.address
