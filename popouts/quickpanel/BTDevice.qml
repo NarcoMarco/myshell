@@ -180,7 +180,13 @@ Rectangle {
 
 				visible: !root.batteryAvailable
 
-				source: Quickshell.iconPath(root.device.icon)
+				source: {
+					if (root.device.icon === "") {
+						Quickshell.iconPath("blueman-device")
+					} else {
+						Quickshell.iconPath(root.device.icon)
+					}
+				}
 			}
 
 			Text {
