@@ -35,6 +35,8 @@ QtObject {
 	// Animations
 	property int defaultAnimDuration: 220
 	property int defaultAnimation: Easing.InOutQuart
+	property int inAnimation: Easing.InQuart
+	property int outAnimation: Easing.OutQuart
 
 	// Font
 	property int fontSize: widgetHeight / 2

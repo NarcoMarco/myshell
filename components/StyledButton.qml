@@ -6,13 +6,8 @@ import QtQuick.Controls
 Button {
 	id: button
 
-	required property int implicitSize
-
 	property color color: Style.fgColor
 	property color textColor: Style.bgColor
-
-	implicitWidth: implicitSize
-	implicitHeight: implicitSize
 
 	HoverHandler {
 		id: test
@@ -27,9 +22,15 @@ Button {
 	}
 
 	contentItem: Item {
+		implicitWidth:buttonText.width
 		Text {
+			id: buttonText
 			anchors.centerIn: parent
 			padding: 0
+			leftPadding: 5
+			rightPadding: 5
+
+			horizontalAlignment: Text.AlignHCenter
 
 			font.family: Style.fontFamily
 			font.pixelSize: button.implicitSize

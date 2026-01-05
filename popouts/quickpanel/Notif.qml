@@ -15,20 +15,25 @@ MouseArea {
 
 	required property Notification notif
 
-	property bool expanded
+	readonly property list<NotificationAction> actions: notif ? notif.actions : []
+
+	readonly property string summary: notif ? notif.summary : ""
+
+	readonly property string body: notif ? notif.body : ""
+
+	readonly property string image: notif ? notif.image: ""
+
+	readonly property bool critical: notif ? notif.urgency == NotificationUrgency.Critical : false
+
+	property bool expanded: false
 
 	property bool dismissing: false
 
 	Layout.fillWidth: parent
 
 	implicitHeight: content.height
-
-	onClicked: print(y)
 	
 	function dismiss() {
-		Qt.callLater(() => {
-			root.notif.dismiss()
-		})
 		removeAnimation.start()
 	}
 
@@ -51,6 +56,11 @@ MouseArea {
 			target: root
 			property: "ListView.delayRemove"
 			value: false
+		}
+		onRunningChanged: {
+			if (!running) {
+				root.notif?.dismiss()
+			}
 		}
 	}
 	
@@ -79,7 +89,6 @@ MouseArea {
 
 		implicitHeight: Math.max(contentColumn.implicitHeight, imageLoader.height) + Style.popoutDefaultMargin * 2
 
-
 		color: Style.bgColor
 
 		radius: (Style.popoutWidgetHeight * 1.25 + 2 * Style.popoutDefaultMargin) / 2
@@ -92,13 +101,13 @@ MouseArea {
 				margins: Style.popoutDefaultMargin
 			}
 
-			active: root.notif.image != ""
+			active: root.image != ""
 
 			sourceComponent: IconImage {
 
 				implicitSize: Style.popoutWidgetHeight * 1.25
 
-				source: root.notif.image
+				source: root.image
 			}
 		}
 
@@ -124,56 +133,84 @@ MouseArea {
 					horizontalAlignment: Text.AlignLeft
 					verticalAlignment: Text.AlignTop
 
-					color: Style.textColor
+					color: root.critical ? Style.warningColor : Style.textColor
 
 					font.family: Style.fontFamily
 					font.pixelSize: Style.popoutFontSize
 					font.weight: Font.DemiBold
 
-					text: root.notif.summary
+					text: root.summary
 				}
 
-				ExpandButton {
-					// implicitWidth: Style.popoutWidgetHeight * 0.5
-					// implicitHeight: Style.popoutWidgetHeight * 0.5
+				CircleButton {
 					implicitSize: Style.popoutWidgetHeight * 0.5
 
 					property bool expandHovered: false
 
-					// color: expandHovered ? Style.hoverColor: Style.fgColor
+					text: "󰅖"
+
+					onClicked: root.dismiss()
+				}
+				
+				CircleButton {
+					implicitSize: Style.popoutWidgetHeight * 0.5
+
+					property bool expandHovered: false
+
 					text: root.expanded ? "󰅀" : "󰅂"
 
 					onClicked: root.expanded = !root.expanded
 				}
 			}
 
-			Text {
+			Item {
+				id: bodyTextWrapper
 				Layout.fillWidth: true
+				Layout.rightMargin: Style.popoutDefaultMargin
+				clip: true
 
-				horizontalAlignment: Text.AlignLeft
+				implicitHeight: root.expanded ? bodyText.implicitHeight : bodyText.lineHeight + 2 * Style.popoutDefaultMargin	
 
-				color: Style.textColor
+				Behavior on implicitHeight {
+					NumberAnimation {
+						duration: Style.defaultAnimDuration
+						easing.type: root.expanded ? Style.inAnimation : Style.outAnimation
+					}
+				}
 
-				font.family: Style.fontFamily
-				font.pixelSize: Style.popoutFontSize * .75
+				Text {
+					id: bodyText
 
-				elide: Text.ElideRight
-				wrapMode: Text.WordWrap
+					anchors.top: parent.top
 
-				maximumLineCount: root.expanded ? 100 : 1
+					width: parent.width
 
-				text: root.notif.body
+					horizontalAlignment: Text.AlignLeft
+
+					color: root.critical ? Style.warningColor : Style.textColor
+
+					font.family: Style.fontFamily
+					font.pixelSize: Style.popoutFontSize * .75
+
+					elide: Text.ElideRight
+					wrapMode: Text.Wrap
+
+					// maximumLineCount: root.expanded ? 100 : 1
+
+					// clip: true
+
+					text: root.body
+				}
 			}
 
 			RowLayout {
 				Layout.fillWidth: true
 
-				Layout.topMargin: Style.popoutDefaultMargin
-
-				visible: root.expanded && root.notif.actions.length > 0
+				Layout.topMargin: childrenRect.height > 0 ? Style.popoutDefaultMargin : 0
+				Layout.margins: 0
 
 				Repeater {
-					model: root.notif.actions
+					model: root.actions ?? []
 
 					Button {
 						id: actionButton
@@ -181,9 +218,26 @@ MouseArea {
 
 						Layout.fillWidth: true
 
-						text: modelData.text
+						text: modelData?.text
 
 						onClicked: modelData.invoke()
+
+						implicitHeight: root.expanded ? Style.popoutWidgetHeight * 0.75 : 0
+						opacity: root.expanded ? 1 : 0
+
+						Behavior on implicitHeight {
+							NumberAnimation {
+								duration: Style.defaultAnimDuration
+								easing.type: root.expanded ? Style.outAnimation : Style.inAnimation
+							}
+						}
+
+						Behavior on opacity {
+							NumberAnimation {
+								duration: Style.defaultAnimDuration
+								easing.type: root.expanded ? Style.outAnimation : Style.inAnimation
+							}
+						}
 
 						HoverHandler {
 							id: actButHover
@@ -199,17 +253,30 @@ MouseArea {
 						}
 
 						contentItem: Text {
-							anchors.centerIn: parent
+							anchors.fill: parent
 
 							horizontalAlignment: Text.AlignHCenter
+							verticalAlignment: Text.AlignVCenter
 
 							font.family: Style.fontFamily
 							font.pixelSize: Style.popoutFontSize
 							font.weight: Font.DemiBold
 
+							elide: Text.ElideRight
+
 							color: Style.bgColor
 
 							text: actionButton.text
+						}
+
+						HoverHandler {
+							id: actionHover
+							enabled: true
+						}
+
+						StyledToolTip {
+							text: actionButton.text 
+							visible: actionHover.hovered
 						}
 					}
 				}

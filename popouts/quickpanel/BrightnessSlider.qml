@@ -1,4 +1,5 @@
 import qs.singletons
+import qs.components
 
 import QtQuick
 import QtQuick.Layouts
@@ -13,6 +14,8 @@ Item {
 
 	RowLayout {
 		anchors.fill: parent
+
+		spacing: Style.popoutDefaultMargin
 
 		Rectangle {
 			id: volumeIcon
@@ -47,63 +50,13 @@ Item {
 			}
 		}
 
-		Slider {
-			id: control
+		StyledSlider {
 			Layout.fillWidth: true
 			Layout.preferredHeight: Style.popoutWidgetHeight / 2
 			from: 0
 			value: Brightness.percent
 			to: 100
 			onMoved: Brightness.setPercent(valueAt(position))
-
-			leftPadding: Style.popoutDefaultMargin
-			rightPadding: 0
-			topPadding: 0
-			bottomPadding: 0
-
-			background: Rectangle {
-				x: control.leftPadding
-				y: control.topPadding + control.availableHeight / 2 - height / 2
-				implicitWidth: control.availableWidth
-				implicitHeight: control.availableHeight * 0.5
-				width: control.availableWidth
-				height: implicitHeight
-				radius: height / 2
-				color: Style.disabledColor
-
-				Rectangle {
-					width: control.visualPosition * parent.width
-					height: parent.height
-					radius: height / 2
-					color: {
-						if (control.pressed) return Style.clickedColor
-						else if (hoverHandler.hovered) return Style.hoverColor
-						else return Style.fgColor
-					}
-				}
-			}
-
-			handle: Rectangle {
-				id: handleRoot
-
-				x: control.leftPadding + control.visualPosition * (control.availableWidth - height)
-				y: control.topPadding + control.availableHeight / 2 - height / 2
-
-				implicitWidth: Style.popoutWidgetHeight / 2
-				implicitHeight: Style.popoutWidgetHeight / 2
-
-				radius: height / 2
-				// color: control.pressed ? Style.hoverColor : Style.fgColor
-				color: {
-					if (control.pressed) return Style.clickedColor
-					else if (hoverHandler.hovered) return Style.hoverColor
-					else return Style.fgColor
-				}
-			}
-			HoverHandler {
-				id: hoverHandler
-				cursorShape: Qt.PointingHandCursor
-			}
 		}
 
 		Rectangle {

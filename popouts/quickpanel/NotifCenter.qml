@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import qs.singletons
 import qs.components
 import qs.popouts.quickpanel
@@ -11,60 +13,61 @@ Rectangle {
 	radius: Style.popoutDefaultRadius
 	color: Style.barColor
 
-	Flickable {
-		id: scroll
-
+	ColumnLayout {
 		anchors.fill: parent
-		clip: true
 
-		// padding: Style.popoutDefaultMargin
+		Text {
+			id: topText
+			color: Style.textColor
 
-		// contentWidth: availableWidth
-		contentWidth: parent.width
-		contentHeight: columnContent.implicitHeight
+			font.family: Style.fontFamily
+			font.pixelSize: Style.popoutFontSize
 
-		flickableDirection: Flickable.VerticalFlick
+			text: "Notifications"
+		}
 
-		ColumnLayout {
-			id: columnContent
-			width: parent.width
-					
-			spacing: Style.popoutDefaultMargin * 2
+		ListView {
+			id: listView
+			model: Notifs.notifs
+
+			Layout.fillWidth: true
+			Layout.fillHeight: true
+
+			spacing: Style.popoutDefaultMargin
+
+			boundsBehavior: Flickable.DragOverBounds
+
+			clip: true
+
+			delegate: Notif {
+				required property var modelData
+
+				// Layout.fillWidth: true
+				width: ListView.view.width
+
+				notif: modelData
+			}
+
+
+			displaced: Transition {
+				NumberAnimation {
+					property: "y"
+					duration: Style.defaultAnimDuration
+					easing.type: Style.defaultAnimation
+				}
+			}
 
 			Text {
-				color: Style.textColor
+				anchors.centerIn: parent
+
+				visible: Notifs.notifs.values.length == 0
 
 				font.family: Style.fontFamily
 				font.pixelSize: Style.popoutFontSize
 
-				text: "Notifications"
-			}
+				color: Style.textColor
 
-			ListView {
-				model: Notifs.notifs
-
-				Layout.fillWidth: true
-
-				implicitHeight: contentHeight
-
-				spacing: Style.popoutDefaultMargin
-
-				delegate: Notif {
-					required property var modelData
-
-					// Layout.fillWidth: true
-					width: ListView.view.width
-
-					notif: modelData
-				}
-
-				removeDisplaced: Transition {
-					NumberAnimation {
-						properties: "y"
-						duration: Style.defaultAnimDuration
-						easing.type: Style.defaultAnimation
-					}
-				}
+				text: "No Notifications"
 			}
 		}
 	}

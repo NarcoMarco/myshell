@@ -91,10 +91,7 @@ PopoutBase {
 
 				BluetoothControl {}
 
-				WifiToggle {
-					widgetWidth: parent.width
-					widgetHeight: parent.height
-				}
+				AudioMixer {}
 			}
 		}
 	}
