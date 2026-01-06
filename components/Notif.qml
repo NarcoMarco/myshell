@@ -29,8 +29,6 @@ MouseArea {
 
 	property bool dismissing: false
 
-	Layout.fillWidth: parent
-
 	implicitHeight: content.height
 	
 	function dismiss() {
@@ -59,6 +57,7 @@ MouseArea {
 		}
 		onRunningChanged: {
 			if (!running) {
+				Notifs.removePopup(root.notif)
 				root.notif?.dismiss()
 			}
 		}

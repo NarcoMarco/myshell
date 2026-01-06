@@ -15,7 +15,7 @@ Loader {
 	property Component panelContent: null
 
 	property real panelWidth: Style.popoutWidgetWidth + Style.popoutDefaultMargin
-	property real panelHeight: screen.height - Style.barHeight
+	property real panelHeight: Screen.height - Style.barHeight
 
 	property bool anchorRight: false
 	property bool anchorLeft: false
@@ -26,6 +26,8 @@ Loader {
 	property bool animateLeft: false
 	property bool animateTop: false
 	property bool animateBottom: false
+
+	property bool enableFocus: false
 
 	property int animDuration: Style.defaultAnimDuration
 	property int panelEasingType: Style.defaultAnimation
@@ -46,11 +48,11 @@ Loader {
 	sourceComponent: PanelWindow {
 		id: root
 
-		WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+		WlrLayershell.keyboardFocus: loaderRoot.enableFocus ? WlrKeyboardFocus.OnDemand: WlrKeyboardFocus.None
 
 		HyprlandFocusGrab {
 			id: focusGrab
-			active: true
+			active: loaderRoot.enableFocus
 			windows: [root]
 			onCleared: loaderRoot.toggle()
 		}

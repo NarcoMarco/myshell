@@ -14,6 +14,8 @@ PopoutBase {
 
 	animateRight: true
 
+	enableFocus: true
+
 	panelContent: Rectangle {
 		id: contentPlane
 

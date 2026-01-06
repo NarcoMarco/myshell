@@ -16,14 +16,55 @@ Rectangle {
 	ColumnLayout {
 		anchors.fill: parent
 
-		Text {
-			id: topText
-			color: Style.textColor
+		Item {
+			Layout.fillWidth: true
+			implicitHeight: Style.popoutWidgetHeight
 
-			font.family: Style.fontFamily
-			font.pixelSize: Style.popoutFontSize
+			RowLayout {
+				anchors.fill: parent
+				Text {
+					id: topText
+					color: Style.textColor
 
-			text: "Notifications"
+					font.family: Style.fontFamily
+					font.pixelSize: Style.popoutFontSize
+
+					text: "Notifications"
+				}
+				Item { Layout.fillWidth: true }
+
+				Text {
+					id: refreshIcon
+
+					Layout.alignment: Qt.AlignRight
+					rightPadding: Style.popoutDefaultMargin
+
+					property bool hovered: false
+
+					color: if (Network.scanning) {
+						Style.clickedColor
+					} else hovered ? Style.hoverColor : Style.textColor
+
+					font.family: Style.fontFamily
+					font.pixelSize: Style.popoutFontSize
+
+					text: "Clear"
+
+					MouseArea {
+						anchors.fill: parent
+						hoverEnabled: true
+
+						onEntered: refreshIcon.hovered = true
+						onExited: refreshIcon.hovered = false
+
+						cursorShape: Qt.PointingHandCursor
+
+						onClicked: {
+							Notifs.clearNotifs()
+						}
+					}
+				}
+			}
 		}
 
 		ListView {
